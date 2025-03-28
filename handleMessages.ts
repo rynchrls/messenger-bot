@@ -31,7 +31,7 @@ export async function handleMessage(event: any) {
       messages: [
         {
           role: "user",
-          content: `${messageText}. and put  something like Hi I'm jhumpstreet Ai at the beginning of the message`,
+          content: `${messageText}. and put Hi, I'm Jhumpstreet AI! 👋 at the beginning of the message`,
         },
       ],
       max_tokens: 500,
