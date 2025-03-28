@@ -12,7 +12,7 @@ const PORT: number = parseInt(process.env.PORT as string, 10) || 5000;
 
 // Webhook Verification
 app.get("/webhook", (req, res) => {
-  const VERIFY_TOKEN: string = process.env.VERIFY_TOKEN as string;
+  const VERIFY_TOKEN: string = process.env.PAGE_ACCESS_TOKEN as string;
   if (
     req.query["hub.mode"] === "subscribe" &&
     req.query["hub.verify_token"] === VERIFY_TOKEN
