@@ -1,5 +1,7 @@
-const axios = require("axios");
+import axios from "axios";
 import { HfInference } from "@huggingface/inference";
+import dotenv from "dotenv";
+dotenv.config({ path: ".env.dev" });
 const client: HfInference = new HfInference(`${process.env.HUGGING_FACE_KEY}`);
 
 function sendMessage(senderId: string, messageText: string) {
@@ -24,15 +26,18 @@ export async function handleMessage(event: any) {
     let senderId: string = event.sender.id;
     let messageText: string = event.message.text.toLowerCase();
     const chatCompletion = await client.chatCompletion({
-      model: "HuggingFaceH4/zephyr-7b-beta",
+      provider: "fireworks-ai",
+      model: "deepseek-ai/DeepSeek-V3-0324",
       messages: [
         {
           role: "user",
-          content: `${messageText}. and put Jhumpstreet to the rescue! at the beginning of your message.`,
+          content: `${messageText}. and put  something like Hi I'm jhumpstreet Ai at the beginning of the message`,
         },
       ],
       max_tokens: 500,
     });
+
+    console.log(chatCompletion.choices[0].message);
     sendMessage(senderId, chatCompletion.choices[0].message.content as string);
   } catch (error) {
     if (error instanceof Error) {
