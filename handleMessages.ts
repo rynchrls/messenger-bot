@@ -20,35 +20,25 @@ function sendMessage(senderId: string, messageText: string) {
 }
 
 export async function handleMessage(event: any) {
-  let senderId = event.sender.id;
-  let messageText = event.message.text.toLowerCase();
-
-  if (messageText.includes("@jsai")) {
-    sendMessage(senderId, "Hello! How can I help?");
-  } else if (messageText.includes("help")) {
-    sendMessage(senderId, "Here are some commands: hello, joke, help");
-  } else {
-    sendMessage(senderId, "Sorry, I didn't understand that.");
+  try {
+    let senderId: string = event.sender.id;
+    let messageText: string = event.message.text.toLowerCase();
+    const chatCompletion = await client.chatCompletion({
+      model: "HuggingFaceH4/zephyr-7b-beta",
+      messages: [
+        {
+          role: "user",
+          content: `${messageText}. and put Jhumpstreet to the rescue! at the beginning of your message.`,
+        },
+      ],
+      max_tokens: 500,
+    });
+    sendMessage(senderId, chatCompletion.choices[0].message.content as string);
+  } catch (error) {
+    if (error instanceof Error) {
+      console.log(error.message); // Logs the error message
+    } else {
+      console.log("An unknown error occurred", error);
+    }
   }
 }
-
-// let senderId = event.sender.id;
-// let messageText = event.message.text.toLowerCase();
-
-// if (messageText.includes("@jsai")) {
-//   sendMessage(senderId, "Hello! How can I help?");
-// } else if (messageText.includes("help")) {
-//   sendMessage(senderId, "Here are some commands: hello, joke, help");
-// } else {
-//   sendMessage(senderId, "Sorry, I didn't understand that.");
-// }
-// const chatCompletion = await client.chatCompletion({
-//     model: "HuggingFaceH4/zephyr-7b-beta",
-//     messages: [
-//       {
-//         role: "user",
-//         content: message,
-//       },
-//     ],
-//     max_tokens: 1000,
-//   });
