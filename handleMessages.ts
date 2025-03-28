@@ -23,6 +23,7 @@ function sendMessage(senderId: string, messageText: string) {
 
 export async function handleMessage(event: any) {
   try {
+    let responseText: string = "";
     let senderId: string = event.sender.id;
     let messageText: string = event.message.text.toLowerCase();
     const chatCompletion = await client.chatCompletion({
@@ -36,9 +37,21 @@ export async function handleMessage(event: any) {
       ],
       max_tokens: 500,
     });
+    let newText = chatCompletion.choices[0].message.content;
 
-    console.log(chatCompletion.choices[0].message);
-    sendMessage(senderId, chatCompletion.choices[0].message.content as string);
+    if (newText) {
+      // Remove unwanted symbols (e.g., /**, //, *, new lines)
+      newText = newText
+        .replace(/[/][*][*]?.*?[*][/]/g, "") // Removes /** some text */
+        .replace(/[/]{2}.*/g, "") // Removes // comments
+        .replace(/[*]/g, "") // Removes standalone *
+        .replace(/\s+/g, " "); // Removes extra spaces/newlines
+    } else {
+      newText = ""; // Default to an empty string if undefined
+    }
+
+    responseText += newText.trim();
+    sendMessage(senderId, responseText as string);
   } catch (error) {
     if (error instanceof Error) {
       console.log(error.message); // Logs the error message
