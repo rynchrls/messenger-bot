@@ -27,8 +27,8 @@ export async function handleMessage(event: any) {
     let senderId: string = event.sender.id;
     let messageText: string = event.message.text.toLowerCase();
     const chatCompletion = await client.chatCompletion({
-      provider: "fireworks-ai",
-      model: "deepseek-ai/DeepSeek-V3-0324",
+      provider: "novita",
+      model: "mistralai/Mistral-7B-Instruct-v0.3",
       messages: [
         {
           role: "user",
